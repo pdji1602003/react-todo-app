@@ -1,0 +1,58 @@
+.list {
+	background-color: var(--card-color);
+	border-radius: var(--card-border);
+	box-shadow: var(--shadow);
+}
+
+.list-header {
+	padding-left: 5%;
+	height: var(--card-header-height);
+	background-color: rgb(255, 123, 108);
+	border-radius: 10px 10px 0 0;
+}
+
+.list-title {
+	font-size: 40px;
+	line-height: 130px;
+}
+
+.list-body{
+	position: relative;
+	padding: 20px;
+	height: calc(100% - var(--card-header-height));
+}
+
+.list-form {
+	display: flex;
+	margin-bottom: 20px;
+}
+
+.list-form > input {
+	display: inline-block;
+	width: 80%;
+	margin-right: 15px;
+	padding-left:5px;
+	font-family: inherit;
+	font-size: 1rem;
+	border: none;
+	border-bottom: 2.2px solid rgb(98, 76, 138);
+	transition: border-bottom 1s ease-in;
+	outline: none;
+}
+
+.list-form > input:focus {
+	border-bottom: 2.2px solid rgb(29, 20, 47);
+}
+
+.list-form > input::placeholder {
+	color: rgb(50, 50, 50);
+}
+
+.list-btn-container {
+	text-align: center;
+}
+
+
+
+
+

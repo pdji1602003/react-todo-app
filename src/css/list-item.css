@@ -1,0 +1,21 @@
+.list-item {
+	padding: 12px 0 12px 5px;
+	border-bottom: dashed 1px black;
+	cursor: pointer;
+}
+
+.list-item::before {
+	content: '';
+	display: inline-block;
+	width: 12px;
+	height: 12px;
+	margin-right: 10px;
+	border-radius:50% ;
+	background: #FFCCB4;
+	
+	text-align: center;
+}
+
+.list-item[data-active="true"]::before {
+	background-color: rgb(255, 123, 108);
+}
