@@ -81,9 +81,7 @@ export default function App() {
             handleTodoDelete={handleTodoDelete}
             selectedTodoId={selectedTodoId}
           />
-          <TaskList
-            todo={selectedTodoList}
-          />
+          <TaskList todo={selectedTodoList}/>
         </TodoContext.Provider>
 
       </main>

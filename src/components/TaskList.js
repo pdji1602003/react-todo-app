@@ -4,36 +4,55 @@ import TaskFilterOption from './TaskFilterOption'
 import { TodoContext } from '../App'
 import uuidv4 from 'uuid/v4'
 
+
 export default function TaskList({ todo }) {
 	const {
+		id,
 		listName,
 		tasks
 	} = todo
-	
-	const [taskName, setTaskName] = useState("")
-	const [newTasks, setNewTasks] = useState(tasks)
-	
 
+	const [taskName, setTaskName] = useState("")
 	const { handleTodoChange } = useContext(TodoContext)
+	const numberOfTasksLeft = tasks && tasks.filter(task => task.isCompleted === false).length
+	const tasksLeft = numberOfTasksLeft > 1 ? 'tasks' :
+										numberOfTasksLeft === 1 ? 'task' : '0 task'
+
+	function handleChange(changes) {
+		handleTodoChange(todo.id, { ...todo, ...changes })
+	}
 
 	function handleTaskInput(e) {
-		const {value} = e.target
+		const { value } = e.target
 		setTaskName(value)
 	}
 
 	function handleTaskSubmit(e) {
 		e.preventDefault()
-		if(taskName === null || taskName === '') return
+		if (taskName === null || taskName === '') return
 		const newTask = {
-			id:uuidv4(), 
-			taskName:taskName, 
-			isCompleted:false
+			id: uuidv4(),
+			taskName: taskName,
+			isCompleted: false
 		}
 
-		setNewTasks(newTasks && [...newTasks, newTask])		
+		handleChange({ tasks: [...todo.tasks, newTask] })
+		setTaskName("")
 	}
 
+	// handleTaskChange會幫我們更新task的內容
+	function handleTaskChange(id, task) {
+		const newTasks = [...tasks]
+		const index = newTasks.findIndex(task => task.id === id)
+		newTasks[index] = task
+		handleChange({ tasks: newTasks })
+	}
 
+	function handleTaskDelete(id) {
+		handleChange({
+			tasks: tasks.filter(task => task.id !== id)
+		})
+	}
 
 	return (
 		<div className="task">
@@ -41,8 +60,8 @@ export default function TaskList({ todo }) {
 				<div className="task-title">{listName}</div>
 			</div>
 			<div className="task-body">
-				<form 
-					className="task-form" 
+				<form
+					className="task-form"
 					action="/"
 					onSubmit={(e) => handleTaskSubmit(e)}
 				>
@@ -56,12 +75,17 @@ export default function TaskList({ todo }) {
 				</form>
 				<ul className="all-tasks">
 					{/* 當我們有tasks時，才執行後面的mapping(原因是在未選擇的情況下，我們的selectedList是空物件) */}
-					{ tasks && tasks.map(task => <TaskItem key={task.id} {...task} />)}
+					{tasks && tasks.map(task => <TaskItem
+						key={task.id}
+						task={task}
+						handleTaskChange={handleTaskChange}
+						handleTaskDelete={handleTaskDelete}
+					/>)}
 				</ul>
 				<div className="task-footer">
-					<span className="task-count">0 items left</span>
+					<span className="task-count">{numberOfTasksLeft} {tasksLeft} left</span>
 					<ul className="task-filter">
-						<TaskFilterOption />
+						<TaskFilterOption tasks={tasks}/>
 					</ul>
 					<button className="btn btn-delete-task">Clear Completed</button>
 				</div>
