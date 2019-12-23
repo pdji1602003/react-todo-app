@@ -1,13 +1,11 @@
 import React, { useContext, useState } from 'react'
 import TaskItem from './TaskItem'
-import TaskFilterOption from './TaskFilterOption'
 import { TodoContext } from '../App'
 import uuidv4 from 'uuid/v4'
 
 
 export default function TaskList({ todo }) {
 	const {
-		id,
 		listName,
 		tasks
 	} = todo
@@ -16,7 +14,7 @@ export default function TaskList({ todo }) {
 	const { handleTodoChange } = useContext(TodoContext)
 	const numberOfTasksLeft = tasks && tasks.filter(task => task.isCompleted === false).length
 	const tasksLeft = numberOfTasksLeft > 1 ? 'tasks' :
-										numberOfTasksLeft === 1 ? 'task' : '0 task'
+		numberOfTasksLeft === 1 ? 'task' : '0 task'
 
 	function handleChange(changes) {
 		handleTodoChange(todo.id, { ...todo, ...changes })
@@ -54,6 +52,34 @@ export default function TaskList({ todo }) {
 		})
 	}
 
+	function handleFilter(e) {
+		e.preventDefault()
+		const { target } = e
+		if (!tasks) return
+		if (!target.matches('a')) return
+		let filter
+		if (target.innerText === 'All') {
+			filter = null
+			
+			console.log('all')
+			return
+		}
+		
+		if (target.innerText === 'Active') {
+			filter = tasks.filter(task => task.isCompleted === false)
+			console.log('active')
+		}
+
+		if (target.innerText === 'Completed') {
+			filter =  tasks.filter(task => task.isCompleted === true)
+			console.log('completed')
+		}
+
+		handleChange({
+			tasks:filter
+		})
+	}
+
 	return (
 		<div className="task">
 			<div className="task-header">
@@ -84,8 +110,16 @@ export default function TaskList({ todo }) {
 				</ul>
 				<div className="task-footer">
 					<span className="task-count">{numberOfTasksLeft} {tasksLeft} left</span>
-					<ul className="task-filter">
-						<TaskFilterOption tasks={tasks}/>
+					<ul className="task-filter" >
+						<li>
+							<a href="/" onClick={e => handleFilter(e)}>All</a>
+						</li>
+						<li>
+							<a href="/">Active</a>
+						</li>
+						<li>
+							<a href="/">Completed</a>
+						</li>
 					</ul>
 					<button className="btn btn-delete-task">Clear Completed</button>
 				</div>
