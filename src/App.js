@@ -46,8 +46,7 @@ export default function App() {
           taskName: '',
           isCompleted: false
         }
-      ],
-      filteredTasks: []
+      ]
     }
     // 將新增的newTodo與既有的todos合併
     setTodos([...todos, newTodo])
@@ -105,7 +104,6 @@ const sampleTodoData = [
         taskName: 'lift up state',
         isCompleted: false
       }
-    ],
-    filteredTasks: []
+    ]
   }
 ]

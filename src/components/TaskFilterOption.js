@@ -1,22 +1,14 @@
 import React from 'react'
 
-export default function TaskFilterOption({ tasks }) {
+export default function TaskFilterOption() {
 
 	return (
 		<>
 			<li>
-				<a
-					href="/"
-				>
-					All
-				</a>
+				<a href="/">All</a>
 			</li>
 			<li>
-				<a
-					href="/"
-				>
-					Active
-				</a>
+				<a href="/">Active</a>
 			</li>
 			<li>
 				<a href="/">Completed</a>
@@ -24,3 +16,8 @@ export default function TaskFilterOption({ tasks }) {
 		</>
 	)
 }
+
+export const All = 'All'
+export const Active = 'Active'
+export const Completed = 'Completed'
+

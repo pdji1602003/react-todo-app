@@ -1,20 +1,23 @@
 import React, { useContext, useState } from 'react'
 import TaskItem from './TaskItem'
 import { TodoContext } from '../App'
+import TaskFilterOptions from './TaskFilterOption'
+import { All, Active, Completed } from './TaskFilterOption'
 import uuidv4 from 'uuid/v4'
+
 
 
 export default function TaskList({ todo }) {
 	const {
 		listName,
-		tasks, 
-		filteredTasks
+		tasks
 	} = todo
-	console.log(filteredTasks)
+
 
 	const [taskName, setTaskName] = useState("")
 	const { handleTodoChange } = useContext(TodoContext)
-	
+	const [filter, setFilter] = useState(All)
+
 	const numberOfTasksLeft = tasks && tasks.filter(task => task.isCompleted === false).length
 	const tasksLeft = numberOfTasksLeft > 1 ? 'tasks' : 'task'
 
@@ -59,19 +62,19 @@ export default function TaskList({ todo }) {
 		const { target } = e
 		if (!tasks) return
 		if (!target.matches('a')) return
-		const filter = target.innerText
-		if (filter === 'All') {
-			handleChange({filteredTasks:tasks})
+		const currentFilter = target.innerText
+		if (currentFilter === 'All') {
+			setFilter(All)
 			return
 		}
 
-		if (filter === 'Active') {
-			handleChange({filteredTasks:tasks.filter(task => !task.isCompleted)})
+		if (currentFilter === 'Active') {
+			setFilter(Active)
 			return
 		}
 
-		if (filter === 'Completed') {
-			handleChange({filteredTasks:tasks.filter(task => task.isCompleted)})
+		if (currentFilter === 'Completed') {
+			setFilter(Completed)
 			return
 		}
 	}
@@ -97,7 +100,11 @@ export default function TaskList({ todo }) {
 				</form>
 				<ul className="all-tasks">
 					{/* 當我們有tasks時，才執行後面的mapping(原因是在未選擇的情況下，我們的selectedList是空物件) */}
-					{tasks && tasks.map(task => <TaskItem
+					{tasks && tasks.filter(task => {
+						if (filter === All) return true
+						if (filter === Completed) return task.isCompleted
+						if (filter === Active) return !task.isCompleted
+					}).map(task => <TaskItem
 						key={task.id}
 						task={task}
 						handleTaskChange={handleTaskChange}
@@ -106,16 +113,8 @@ export default function TaskList({ todo }) {
 				</ul>
 				<div className="task-footer">
 					<span className="task-count">{numberOfTasksLeft} {tasksLeft} left</span>
-					<ul className="task-filter" >
-						<li>
-							<a href="/" onClick={e => handleFilter(e)}>All</a>
-						</li>
-						<li>
-							<a href="/" onClick={e => handleFilter(e)}>Active</a>
-						</li>
-						<li>
-							<a href="/" onClick={e => handleFilter(e)}>Completed</a>
-						</li>
+					<ul className="task-filter" onClick={(e) => handleFilter(e)}>
+						<TaskFilterOptions />
 					</ul>
 					<button className="btn btn-delete-task">Clear Completed</button>
 				</div>
@@ -123,3 +122,5 @@ export default function TaskList({ todo }) {
 		</div>
 	)
 }
+
+
