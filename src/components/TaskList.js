@@ -7,14 +7,16 @@ import uuidv4 from 'uuid/v4'
 export default function TaskList({ todo }) {
 	const {
 		listName,
-		tasks
+		tasks, 
+		filteredTasks
 	} = todo
+	console.log(filteredTasks)
 
 	const [taskName, setTaskName] = useState("")
 	const { handleTodoChange } = useContext(TodoContext)
+	
 	const numberOfTasksLeft = tasks && tasks.filter(task => task.isCompleted === false).length
-	const tasksLeft = numberOfTasksLeft > 1 ? 'tasks' :
-		numberOfTasksLeft === 1 ? 'task' : '0 task'
+	const tasksLeft = numberOfTasksLeft > 1 ? 'tasks' : 'task'
 
 	function handleChange(changes) {
 		handleTodoChange(todo.id, { ...todo, ...changes })
@@ -57,27 +59,21 @@ export default function TaskList({ todo }) {
 		const { target } = e
 		if (!tasks) return
 		if (!target.matches('a')) return
-		let filter
-		if (target.innerText === 'All') {
-			filter = null
-			
-			console.log('all')
+		const filter = target.innerText
+		if (filter === 'All') {
+			handleChange({filteredTasks:tasks})
 			return
 		}
-		
-		if (target.innerText === 'Active') {
-			filter = tasks.filter(task => task.isCompleted === false)
-			console.log('active')
+
+		if (filter === 'Active') {
+			handleChange({filteredTasks:tasks.filter(task => !task.isCompleted)})
+			return
 		}
 
-		if (target.innerText === 'Completed') {
-			filter =  tasks.filter(task => task.isCompleted === true)
-			console.log('completed')
+		if (filter === 'Completed') {
+			handleChange({filteredTasks:tasks.filter(task => task.isCompleted)})
+			return
 		}
-
-		handleChange({
-			tasks:filter
-		})
 	}
 
 	return (
@@ -115,10 +111,10 @@ export default function TaskList({ todo }) {
 							<a href="/" onClick={e => handleFilter(e)}>All</a>
 						</li>
 						<li>
-							<a href="/">Active</a>
+							<a href="/" onClick={e => handleFilter(e)}>Active</a>
 						</li>
 						<li>
-							<a href="/">Completed</a>
+							<a href="/" onClick={e => handleFilter(e)}>Completed</a>
 						</li>
 					</ul>
 					<button className="btn btn-delete-task">Clear Completed</button>

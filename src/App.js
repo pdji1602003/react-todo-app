@@ -12,11 +12,11 @@ export default function App() {
   const [todos, setTodos] = useState(sampleTodoData)
   const [listName, setListName] = useState("")
   const [selectedTodoId, setSelectedTodoId] = useState()
-  const selectedTodoList = todos.find(todo => todo.id === selectedTodoId)||{}
-  
+  const selectedTodoList = todos.find(todo => todo.id === selectedTodoId) || {}
+
 
   const TodoContextValue = {
-    handleTodoSelect, 
+    handleTodoSelect,
     handleTodoChange
   }
 
@@ -46,7 +46,8 @@ export default function App() {
           taskName: '',
           isCompleted: false
         }
-      ]
+      ],
+      filteredTasks: []
     }
     // 將新增的newTodo與既有的todos合併
     setTodos([...todos, newTodo])
@@ -62,12 +63,14 @@ export default function App() {
     setTodos(todos.filter(todo => todo.id !== selectedTodoId))
   }
 
-  function handleTodoChange(id, todo){
+  function handleTodoChange(id, todo) {
     const newTodos = [...todos]
-    const index = newTodos.findIndex( t => t.id === id)
+    const index = newTodos.findIndex(t => t.id === id)
     newTodos[index] = todo
     setTodos(newTodos)
   }
+
+  
 
   return (
     <>
@@ -81,7 +84,7 @@ export default function App() {
             handleTodoDelete={handleTodoDelete}
             selectedTodoId={selectedTodoId}
           />
-          <TaskList todo={selectedTodoList}/>
+          <TaskList todo={selectedTodoList} />
         </TodoContext.Provider>
 
       </main>
@@ -102,6 +105,7 @@ const sampleTodoData = [
         taskName: 'lift up state',
         isCompleted: false
       }
-    ]
+    ],
+    filteredTasks: []
   }
 ]
