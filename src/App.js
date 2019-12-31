@@ -4,6 +4,7 @@ import TaskList from './components/TaskList'
 import './css/app.css'
 import uuidv4 from 'uuid/v4'
 
+
 const LOCAL_STORAGE_KEY = 'todoWithReact.todos'
 
 export const TodoContext = React.createContext()
@@ -12,12 +13,13 @@ export default function App() {
   const [todos, setTodos] = useState(sampleTodoData)
   const [listName, setListName] = useState("")
   const [selectedTodoId, setSelectedTodoId] = useState()
-  const selectedTodoList = todos.find(todo => todo.id === selectedTodoId) || {}
-
+  // selectedTodoList後面若接|| {}，代表若沒有選中任何list，我們會選擇render一個空物件
+  const selectedTodoList = todos.find(todo => todo.id === selectedTodoId)
 
   const TodoContextValue = {
     handleTodoSelect,
-    handleTodoChange
+    handleTodoChange, 
+    handleTodoActivate
   }
 
   useEffect(() => {
@@ -54,6 +56,10 @@ export default function App() {
     setListName("")
   }
 
+  function handleTodoActivate(id){
+    return selectedTodoId === id
+  }
+
   function handleTodoSelect(id) {
     setSelectedTodoId(id)
   }
@@ -69,8 +75,6 @@ export default function App() {
     setTodos(newTodos)
   }
 
-  
-
   return (
     <>
       <main>
@@ -83,7 +87,7 @@ export default function App() {
             handleTodoDelete={handleTodoDelete}
             selectedTodoId={selectedTodoId}
           />
-          <TaskList todo={selectedTodoList} />
+          { selectedTodoList && <TaskList todo={selectedTodoList} />}
         </TodoContext.Provider>
 
       </main>

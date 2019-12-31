@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useRef } from 'react'
 import TaskItem from './TaskItem'
 import { TodoContext } from '../App'
 import TaskFilterOptions from './TaskFilterOption'
@@ -17,8 +17,10 @@ export default function TaskList({ todo }) {
 	const [taskName, setTaskName] = useState("")
 	const { handleTodoChange } = useContext(TodoContext)
 	const [filter, setFilter] = useState(All)
+	const taskFooter = useRef()
+	const taskFooterHeight = taskFooter.current && taskFooter.current.clientHeight
 
-	const numberOfTasksLeft = tasks && tasks.filter(task => task.isCompleted === false).length
+	const numberOfTasksLeft = tasks.filter(task => task.isCompleted === false).length
 	const tasksLeft = numberOfTasksLeft > 1 ? 'tasks' : 'task'
 
 	function handleChange(changes) {
@@ -62,6 +64,7 @@ export default function TaskList({ todo }) {
 		const { target } = e
 		if (!tasks) return
 		if (!target.matches('a')) return
+
 		const currentFilter = target.innerText
 		if (currentFilter === 'All') {
 			setFilter(All)
@@ -77,6 +80,12 @@ export default function TaskList({ todo }) {
 			setFilter(Completed)
 			return
 		}
+	}
+
+	function handleAllTasksDelete() {
+		const newTasks = [...tasks]
+		const unCompletedTasks = newTasks.filter(task => !task.isCompleted)
+		handleChange({ tasks: unCompletedTasks })
 	}
 
 	return (
@@ -98,25 +107,34 @@ export default function TaskList({ todo }) {
 					/>
 					<button type="submit" className="btn btn-submit">+</button>
 				</form>
-				<ul className="all-tasks">
+				<ul className="all-tasks" style={{ marginBottom: taskFooterHeight + 'px' }}>
 					{/* 當我們有tasks時，才執行後面的mapping(原因是在未選擇的情況下，我們的selectedList是空物件) */}
-					{tasks && tasks.filter(task => {
-						if (filter === All) return true
-						if (filter === Completed) return task.isCompleted
-						if (filter === Active) return !task.isCompleted
-					}).map(task => <TaskItem
+					{tasks
+					.filter(task => {
+							if (filter === All) return true
+							if (filter === Completed) return task.isCompleted
+							if (filter === Active) return !task.isCompleted}
+					)
+					.map(task => <TaskItem
 						key={task.id}
 						task={task}
 						handleTaskChange={handleTaskChange}
 						handleTaskDelete={handleTaskDelete}
 					/>)}
 				</ul>
-				<div className="task-footer">
+				<div
+					className="task-footer"
+					ref={taskFooter}>
 					<span className="task-count">{numberOfTasksLeft} {tasksLeft} left</span>
 					<ul className="task-filter" onClick={(e) => handleFilter(e)}>
 						<TaskFilterOptions />
 					</ul>
-					<button className="btn btn-delete-task">Clear Completed</button>
+					<button
+						className="btn btn-delete-task"
+						onClick={handleAllTasksDelete}
+					>
+						Clear Completed
+					</button>
 				</div>
 			</div>
 		</div>

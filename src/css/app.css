@@ -29,9 +29,9 @@
 }
 
 #root {
-	/* position: relative; */
+	position: relative;
 	width: 100vw;
-	height: 100vh;
+	min-height: 100vh;
 	color:black ;
 	background: #ffece1 no-repeat;
 	background-size: cover;
@@ -45,8 +45,8 @@ main {
 	column-gap: 5%;
 	max-width: 1000px;
 	width: 80%;
-	height: 80%;
-	margin: 5% auto 0;
+	min-height: 80vh;
+	margin: 5% auto 5%;
 }
 
 ul {
